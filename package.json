@@ -1,0 +1,45 @@
+{
+  "name": "angular-filter-service",
+  "description": "Simple data manager for filtering, sorting, and pagination",
+  "version": "1.0.0",
+  "homepage": "https://github.com/Banno/angular-filter-service",
+  "license": "Apache-2.0",
+  "contributors": [
+    "Eric Heikes <eric.heikes@banno.com>"
+  ],
+  "keywords": [
+    "angular",
+    "data store",
+    "collection",
+    "list",
+    "filter",
+    "sort",
+    "pagination"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "angular": "^1.3.15",
+    "angular-mocks": "^1.3.15",
+    "del": "^1.1.1",
+    "gulp": "^3.8.11",
+    "gulp-header": "^1.2.2",
+    "gulp-jshint": "^1.10.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0",
+    "gulp-umd": "^0.1.3",
+    "jasmine-core": "^2.3.4",
+    "jshint-stylish": "^1.0.2",
+    "karma": "^0.12.31",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-requirejs": "^0.2.2",
+    "run-sequence": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Banno/angular-filter-service.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Banno/angular-filter-service/issues"
+  }
+}
