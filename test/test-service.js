@@ -8,29 +8,29 @@ define(['testModule'], function(data) {
 		var executeCallback = jasmine.createSpy('executeCallback');
 
 		var arbitraryParams = {
-			type: 'abcdef',
+			searchField: 'abcdef',
 			limit: 9999,
 			offset: 9999,
 			sortField: 'abcdef',
 			sortAscending: 'abcdef',
-			input: 'abcdef'
+			searchQuery: 'abcdef'
 		};
 
 		var setArbitraryParams = function() {
-			filterService.searchWithParameters(arbitraryParams, null);
+			filterService.use(arbitraryParams, null);
 		};
 
 		var retrieveParams = function() {
-			params = filterService.getSearchParameters();
+			params = filterService.getParameters();
 		};
 
 		var retrieveState = function() {
-			state = filterService.getSortPageSearchState();
+			state = filterService.getState();
 		};
 
 		var spyOnExecute = function() {
-			var currentState = filterService.getSearchParameters();
-			filterService.searchWithParameters(currentState, executeCallback);
+			var currentState = filterService.getParameters();
+			filterService.use(currentState, executeCallback);
 			executeCallback.calls.reset();
 		};
 
@@ -41,43 +41,43 @@ define(['testModule'], function(data) {
 		}));
 
 		beforeEach(function() {
-			spyOn(filterService, 'executeSearch').and.callThrough();
+			spyOn(filterService, 'refresh').and.callThrough();
 		});
 
-		describe('getSearchParameters()', function() {
+		describe('getParameters()', function() {
 
 			beforeEach(function() {
-				filterService.searchWithParameters(arbitraryParams);
+				filterService.use(arbitraryParams);
 				retrieveParams();
 			});
 
 			it('should return the search parameters', function() {
-				expect(params.type).toBe(arbitraryParams.type);
+				expect(params.searchField).toBe(arbitraryParams.searchField);
 				expect(params.limit).toBe(arbitraryParams.limit);
 				expect(params.offset).toBe(arbitraryParams.offset);
 				expect(params.sortField).toBe(arbitraryParams.sortField);
 				expect(params.sortAscending).toBe(arbitraryParams.sortAscending);
-				expect(params.input).toBe(arbitraryParams.input);
+				expect(params.searchQuery).toBe(arbitraryParams.searchQuery);
 			});
 
 		});
 
-		describe('searchWithParameters()', function() {
+		describe('use()', function() {
 
 			var searchFunc = jasmine.createSpy('searchFunc');
 
 			beforeEach(function() {
-				filterService.searchWithParameters(arbitraryParams, searchFunc);
+				filterService.use(arbitraryParams, searchFunc);
 				retrieveParams();
 			});
 
 			it('should change the search parameters', function() {
-				expect(params.type).toBe(arbitraryParams.type);
+				expect(params.searchField).toBe(arbitraryParams.searchField);
 				expect(params.limit).toBe(arbitraryParams.limit);
 				expect(params.offset).toBe(arbitraryParams.offset);
 				expect(params.sortField).toBe(arbitraryParams.sortField);
 				expect(params.sortAscending).toBe(arbitraryParams.sortAscending);
-				expect(params.input).toBe(arbitraryParams.input);
+				expect(params.searchQuery).toBe(arbitraryParams.searchQuery);
 			});
 
 			it('should perform the search', function() {
@@ -86,7 +86,7 @@ define(['testModule'], function(data) {
 
 		});
 
-		describe('executeSearch()', function() {
+		describe('refresh()', function() {
 
 			var searchFunc = jasmine.createSpy('searchFunc');
 			var results = {
@@ -96,20 +96,20 @@ define(['testModule'], function(data) {
 
 			beforeEach(function() {
 				searchFunc.calls.reset();
-				filterService.setSearchResults(results, angular.noop);
+				filterService.setResults(results, angular.noop);
 			});
 
 			describe('when a search function exists', function() {
 
 				beforeEach(function() {
-					filterService.searchWithParameters(arbitraryParams, searchFunc);
-					filterService.executeSearch();
+					filterService.use(arbitraryParams, searchFunc);
+					filterService.refresh();
 					retrieveState();
 				});
 
 				it('should reset the results', function() {
-					expect(state.searchResults.total).toBe(0);
-					expect(state.searchResults.items).toEqual([]);
+					expect(state.results.total).toBe(0);
+					expect(state.results.items).toEqual([]);
 				});
 
 				it('should call the search function', function() {
@@ -121,14 +121,14 @@ define(['testModule'], function(data) {
 			describe('when a search function does NOT exist', function() {
 
 				beforeEach(function() {
-					filterService.searchWithParameters(arbitraryParams, null);
-					filterService.executeSearch();
+					filterService.use(arbitraryParams, null);
+					filterService.refresh();
 					retrieveState();
 				});
 
 				it('should NOT reset the results', function() {
-					expect(state.searchResults.total).not.toBe(0);
-					expect(state.searchResults.items).not.toEqual([]);
+					expect(state.results.total).not.toBe(0);
+					expect(state.results.items).not.toEqual([]);
 				});
 
 				it('should NOT call the search function', function() {
@@ -145,7 +145,7 @@ define(['testModule'], function(data) {
 			var offset;
 
 			beforeEach(function() {
-				filterService.changePageLimit(limit);
+				filterService.setPageLimit(limit);
 				filterService.showNextPage();
 				filterService.showNextPage();
 				retrieveParams();
@@ -172,7 +172,7 @@ define(['testModule'], function(data) {
 			var offset;
 
 			beforeEach(function() {
-				filterService.changePageLimit(limit);
+				filterService.setPageLimit(limit);
 				retrieveParams();
 				offset = params.offset;
 
@@ -241,7 +241,7 @@ define(['testModule'], function(data) {
 
 		});
 
-		describe('setSearchType()', function() {
+		describe('setSearchField()', function() {
 
 			var newType = 'type string';
 
@@ -253,12 +253,12 @@ define(['testModule'], function(data) {
 			describe('when forceUpdate is set', function() {
 
 				beforeEach(function() {
-					filterService.setSearchType(newType, true);
+					filterService.setSearchField(newType, true);
 					retrieveParams();
 				});
 
 				it('should set params to the specified string', function() {
-					expect(params.type).toBe(newType);
+					expect(params.searchField).toBe(newType);
 				});
 
 				it('should reset the offset', function() {
@@ -274,12 +274,12 @@ define(['testModule'], function(data) {
 			describe('when forceUpdate is NOT set', function() {
 
 				beforeEach(function() {
-					filterService.setSearchType(newType);
+					filterService.setSearchField(newType);
 					retrieveParams();
 				});
 
 				it('should set params to the specified string', function() {
-					expect(params.type).toBe(newType);
+					expect(params.searchField).toBe(newType);
 				});
 
 				it('should NOT reset the offset', function() {
@@ -294,19 +294,19 @@ define(['testModule'], function(data) {
 
 		});
 
-		describe('setSearchInput()', function() {
+		describe('setSearchQuery()', function() {
 
 			var newInput = 'search string';
 
 			beforeEach(function() {
 				setArbitraryParams();
 				spyOnExecute();
-				filterService.setSearchInput(newInput);
+				filterService.setSearchQuery(newInput);
 				retrieveParams();
 			});
 
 			it('should set params to the specified string', function() {
-				expect(params.input).toBe(newInput);
+				expect(params.searchQuery).toBe(newInput);
 			});
 
 			it('should reset the offset', function() {
@@ -319,14 +319,14 @@ define(['testModule'], function(data) {
 
 		});
 
-		describe('changePageLimit()', function() {
+		describe('setPageLimit()', function() {
 
 			var newLimit = 42;
 
 			beforeEach(function() {
 				setArbitraryParams();
 				spyOnExecute();
-				filterService.changePageLimit(newLimit);
+				filterService.setPageLimit(newLimit);
 				retrieveParams();
 			});
 
@@ -344,7 +344,7 @@ define(['testModule'], function(data) {
 
 		});
 
-		describe('setSearchResults()', function() {
+		describe('setResults()', function() {
 
 			var results = {
 				total: 42,
@@ -353,13 +353,13 @@ define(['testModule'], function(data) {
 			var callback = jasmine.createSpy('sortPageSearchCompleteCallBack');
 
 			beforeEach(function() {
-				filterService.setSearchResults(results, callback);
+				filterService.setResults(results, callback);
 			});
 
 			it('should save the results', function() {
 				retrieveState();
-				expect(state.searchResults.total).toBe(results.total);
-				expect(state.searchResults.items).toEqual(results.items);
+				expect(state.results.total).toBe(results.total);
+				expect(state.results.items).toEqual(results.items);
 			});
 
 			it('should call the callback with the search state', function() {
@@ -368,16 +368,16 @@ define(['testModule'], function(data) {
 
 		});
 
-		describe('getSortPageSearchState()', function() {
+		describe('getState()', function() {
 
 			var api = [
-				'disableNextPage',
-				'disablePreviousPage',
-				'searchResultsCount',
-				'pageBeginCount',
-				'pageEndCount',
-				'searchResults',
-				'showNoItemsFeedback',
+				'isLastPage',
+				'isFirstPage',
+				'count',
+				'firstIndex',
+				'lastIndex',
+				'results',
+				'empty',
 				'showNoAssetsFeedback'
 			];
 
@@ -386,8 +386,8 @@ define(['testModule'], function(data) {
 			});
 
 			it('should initialize with no results', function() {
-				expect(state.searchResults.total).toBe(0);
-				expect(state.searchResults.items).toEqual([]);
+				expect(state.results.total).toBe(0);
+				expect(state.results.items).toEqual([]);
 			});
 
 			angular.forEach(api, function(funcName) {

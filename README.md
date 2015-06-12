@@ -14,16 +14,16 @@ angular.module('myApp', ['banno.filterService'])
   }
 
   function searchItems() {
-    $scope.filters = filterService.getSearchParameters();
+    $scope.filters = filterService.getParameters();
     myService.get({
       limit: $scope.filters.limit,
       offset: $scope.filters.offset,
       sortField: $scope.filters.sortField,
       sortDirection: $scope.filters.sortAscending ? 'asc' : 'desc'
     }).then(function(results) {
-      filterService.setSearchResults(results, completed);
+      filterService.setResults(results, completed);
     }, function() {
-      filterService.setSearchResults({
+      filterService.setResults({
         items: [],
         total: 0
       }, completed);
@@ -46,30 +46,30 @@ angular.module('myApp', ['banno.filterService'])
     filterService.setSortAscending(direction.toLowerCase() === 'asc');
   };
 
-  $scope.onSubmitSearch = function(input) {
-    filterService.setSearchInput(input);
+  $scope.onSubmitSearch = function(text) {
+    filterService.setSearchQuery(text);
   };
 
-  $scope.onSetSearchTypeClick = function(type, forceUpdate) {
-    filterService.setSearchType(type, forceUpdate);
+  $scope.onSetSearchFieldClick = function(type, forceUpdate) {
+    filterService.setSearchField(type, forceUpdate);
   };
 
   $scope.onClearSearchClick = function() {
-    filterService.setSearchInput('');
+    filterService.setSearchQuery('');
   };
 
   $scope.refresh = function() {
-    filterService.searchWithParameters($scope.filters, searchItems);
-    $scope.filtered = filterService.getSortPageSearchState();
+    filterService.use($scope.filters, searchItems);
+    $scope.filtered = filterService.getState();
   };
 
   $scope.filters = {
-    type: 'Title',
+    searchField: 'Title',
     limit: 20,
     offset: 0,
     sortField: 'createdOn',
     sortAscending: false,
-    input: ''
+    searchQuery: ''
   };
   $scope.refresh();
 });
@@ -85,63 +85,63 @@ If you are using RequireJS, load the "banno/filterService" module.
 
 ## API
 
-### changePageLimit(newLimit)
+### setPageLimit(newLimit)
 
 Changes the limit parameter (number of results per page).
 
 Also resets the offset parameter to 0 and performs the search.
 
-### executeSearch()
+### refresh()
 
-Performs the search, i.e. runs the function argument passed to `searchWithParameters()`.
+Performs the search, i.e. runs the function callback passed to `use()`.
 
-### getSearchParameters()
+### getParameters()
 
-Returns the search parameters as an object with the following properties:
+Returns the filtering parameters as an object with the following properties:
 
-* `type`
+* `searchField`
 * `limit`
 * `offset`
 * `sortField`
 * `sortAscending`
-* `input`
+* `searchText`
 
-### getSortPageSearchState()
+### getState()
 
 Returns an object that contains information about the search state:
 
-* `disableNextPage` -- `true` if the current results are the last page (given the offset & limit)
-* `disablePreviousPage` -- `true` if the current results are the first page (given the offset)
-* `searchResultsCount` -- The number of results
-* `pageBeginCount` -- Index of the first item in the results (beginning with 1)
-* `pageEndCount` -- Index of the last item in the results (beginning with 1)
-* `searchResults` -- An object containing the results of the search:
+* `isLastPage` -- `true` if the current results are the last page (given the offset & limit)
+* `isFirstPage` -- `true` if the current results are the first page (given the offset)
+* `count` -- The number of results
+* `firstIndex` -- Index of the first item in the results (beginning with 1)
+* `lastIndex` -- Index of the last item in the results (beginning with 1)
+* `results` -- An object containing the results of the search:
   * `total` -- Number of results
   * `items` -- Array of results
-* `showNoItemsFeedback` -- `true` if the results are empty
-* `showNoAssetsFeedback` -- *deprecated* Same as showNoItemsFeedback
+* `empty` -- `true` if the results are empty
+* `showNoAssetsFeedback` -- *deprecated* Same as `empty`
 
-### searchWithParameters(searchParams, searchFunction)
+### use(searchParams, searchFunction)
 
 Sets the parameters for the search, and performs the search.
 
-The `searchParams` argument should be an object the same properties as `getSearchParameters()`. The second argument (`searchFunction`) is called every time that `executeSearch()` is called.
+The `searchParams` argument should be an object the same properties as `getParameters()`. The second argument (`searchFunction`) is called every time that `refresh()` is called.
 
-### setSearchInput(string)
+### setSearchQuery(string)
 
-Changes the text parameter.
+Changes the search text parameter.
 
 Also resets the offset parameter to 0 and performs the search.
 
-### setSearchResults(results, callback)
+### setResults(results, callback)
 
-Saves the results into the search state. The `results` object should contain `total` and `items` properties.
+Saves the results into the service's state. The `results` object should contain `total` and `items` properties.
 
 The `callback` function is then called, with the search state passed as an argument.
 
-### setSearchType(string, forceUpdate)
+### setSearchField(string, forceUpdate)
 
-Changes the type parameter.
+Changes the search field.
 
 If `forceUpdate` is truthy, it also resets the offset parameter to 0 and performs the search.
 
