@@ -19,7 +19,7 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 	var searchParameters = {
 		limit: 20,
 		offset: 0,
-		input: ''
+		searchQuery: ''
 	};
 
 	var searchResults = {
@@ -31,18 +31,18 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 		return angular.copy(searchParameters);
 	}
 
-	function searchWithParameters(searchParams, triggerSearchCallback) {
+	function searchWithParameters(searchParams, callback) {
 		searchParameters = {
-			type: angular.copy(searchParams.type),
 			limit: angular.copy(searchParams.limit),
 			offset: angular.copy(searchParams.offset),
-			sortField: angular.copy(searchParams.sortField),
 			sortAscending: angular.copy(searchParams.sortAscending),
-			input: angular.copy(searchParams.input),
-			triggerSearchCallback: triggerSearchCallback,
+			sortField: angular.copy(searchParams.sortField),
+			searchField: angular.copy(searchParams.searchField),
+			searchQuery: angular.copy(searchParams.searchQuery),
+			callback: callback,
 			triggerSearchCallBack: function() {
-				console.warn('triggerSearchCallBack has been deprecated. Please use triggerSearchCallback instead.');
-				return triggerSearchCallback();
+				console.warn('triggerSearchCallBack has been deprecated. Please use the "callback" property instead.');
+				return callback();
 			}
 		};
 		executeSearch();
@@ -88,7 +88,7 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 
 	function setSearchType(type, forceUpdate) {
 		if (searchParameters) {
-			searchParameters.type = type;
+			searchParameters.searchField = type;
 			if (forceUpdate) {
 				searchParameters.offset = 0;
 				executeSearch();
@@ -99,18 +99,18 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 	function setSearchInput(input) {
 		if (searchParameters) {
 			searchParameters.offset = 0;
-			searchParameters.input = input;
+			searchParameters.searchQuery = input;
 			executeSearch();
 		}
 	}
 
 	function executeSearch() {
-		if (searchParameters && searchParameters.triggerSearchCallback) {
+		if (searchParameters && searchParameters.callback) {
 			searchResults = {
 				total: 0,
 				items: []
 			};
-			searchParameters.triggerSearchCallback();
+			searchParameters.callback();
 		}
 	}
 
@@ -144,15 +144,15 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 
 	function getSortPageSearchState() {
 		return {
-			disableNextPage: isLastPageSearch(),
-			disablePreviousPage: isFirstPageSearch(),
-			searchResultsCount: numberOfSearchResults(),
-			pageBeginCount: pageBeginTotal(),
-			pageEndCount: pageEndTotal(),
-			searchResults: searchResults,
-			showNoItemsFeedback: showNoItemsFeedback(),
+			isLastPage: isLastPageSearch(),
+			isFirstPage: isFirstPageSearch(),
+			count: numberOfSearchResults(),
+			firstIndex: pageBeginTotal(),
+			lastIndex: pageEndTotal(),
+			results: searchResults,
+			empty: showNoItemsFeedback(),
 			showNoAssetsFeedback: function() {
-				console.warn('showNoAssetsFeedback() has been deprecated. Please use showNoItemsFeedback() instead.');
+				console.warn('showNoAssetsFeedback() has been deprecated. Please use the "empty" property instead.');
 				return showNoItemsFeedback();
 			}
 		};
@@ -167,18 +167,18 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 	}
 
 	return {
-		getSearchParameters: getSearchParameters,
-		searchWithParameters: searchWithParameters,
-		executeSearch: executeSearch,
+		getParameters: getSearchParameters,
+		getState: getSortPageSearchState,
+		refresh: executeSearch,
+		setPageLimit: changePageLimit,
+		setResults: setSearchResults,
+		setSearchField: setSearchType,
+		setSearchQuery: setSearchInput,
+		setSortAscending: setSortAscending,
+		setSortField: setSortField,
 		showPreviousPage: showPreviousPage,
 		showNextPage: showNextPage,
-		setSortField: setSortField,
-		setSortAscending: setSortAscending,
-		setSearchType: setSearchType,
-		setSearchInput: setSearchInput,
-		changePageLimit: changePageLimit,
-		setSearchResults: setSearchResults,
-		getSortPageSearchState: getSortPageSearchState
+		use: searchWithParameters
 	};
 });
 
