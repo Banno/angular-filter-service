@@ -109,7 +109,6 @@ Returns an object that contains information about the search state:
   * `total` -- Number of results
   * `items` -- Array of results
 * `empty` -- `true` if the results are empty
-* `showNoAssetsFeedback` -- *deprecated* Same as `empty`
 
 ### refresh()
 
