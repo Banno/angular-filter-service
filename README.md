@@ -64,11 +64,11 @@ angular.module('myApp', ['banno.filterService'])
   };
 
   $scope.filters = {
-    searchField: 'Title',
     limit: 20,
     offset: 0,
     sortField: 'createdOn',
     sortAscending: false,
+    searchField: 'Title',
     searchQuery: ''
   };
   $scope.refresh();
@@ -85,26 +85,16 @@ If you are using RequireJS, load the "banno/filterService" module.
 
 ## API
 
-### setPageLimit(newLimit)
-
-Changes the limit parameter (number of results per page).
-
-Also resets the offset parameter to 0 and performs the search.
-
-### refresh()
-
-Performs the search, i.e. runs the function callback passed to `use()`.
-
 ### getParameters()
 
 Returns the filtering parameters as an object with the following properties:
 
-* `searchField`
 * `limit`
 * `offset`
 * `sortField`
 * `sortAscending`
-* `searchText`
+* `searchField`
+* `searchQuery`
 
 ### getState()
 
@@ -121,15 +111,13 @@ Returns an object that contains information about the search state:
 * `empty` -- `true` if the results are empty
 * `showNoAssetsFeedback` -- *deprecated* Same as `empty`
 
-### use(searchParams, searchFunction)
+### refresh()
 
-Sets the parameters for the search, and performs the search.
+Performs the search, i.e. runs the function callback passed to `use()`.
 
-The `searchParams` argument should be an object the same properties as `getParameters()`. The second argument (`searchFunction`) is called every time that `refresh()` is called.
+### setPageLimit(newLimit)
 
-### setSearchQuery(string)
-
-Changes the search text parameter.
+Changes the limit parameter (number of results per page).
 
 Also resets the offset parameter to 0 and performs the search.
 
@@ -144,6 +132,12 @@ The `callback` function is then called, with the search state passed as an argum
 Changes the search field.
 
 If `forceUpdate` is truthy, it also resets the offset parameter to 0 and performs the search.
+
+### setSearchQuery(string)
+
+Changes the search text parameter.
+
+Also resets the offset parameter to 0 and performs the search.
 
 ### setSortAscending(bool)
 
@@ -164,6 +158,12 @@ Moves the offset forward (based on the limit) and performs the search.
 ### showPreviousPage()
 
 Moves the offset backward (based on the limit) and performs the search.
+
+### use(searchParams, searchFunction)
+
+Sets the parameters for the search, and performs the search.
+
+The `searchParams` argument should be an object the same properties as `getParameters()`. The second argument (`searchFunction`) is called every time that `refresh()` is called.
 
 ## Contributing
 

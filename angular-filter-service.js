@@ -18,11 +18,11 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 
 	function searchWithParameters(searchParams, callback) {
 		searchParameters = {
-			searchField: angular.copy(searchParams.searchField),
 			limit: angular.copy(searchParams.limit),
 			offset: angular.copy(searchParams.offset),
-			sortField: angular.copy(searchParams.sortField),
 			sortAscending: angular.copy(searchParams.sortAscending),
+			sortField: angular.copy(searchParams.sortField),
+			searchField: angular.copy(searchParams.searchField),
 			searchQuery: angular.copy(searchParams.searchQuery),
 			callback: callback,
 			triggerSearchCallBack: function() {
@@ -153,16 +153,16 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 
 	return {
 		getParameters: getSearchParameters,
-		use: searchWithParameters,
+		getState: getSortPageSearchState,
 		refresh: executeSearch,
-		showPreviousPage: showPreviousPage,
-		showNextPage: showNextPage,
-		setSortField: setSortField,
-		setSortAscending: setSortAscending,
-		setSearchField: setSearchType,
-		setSearchQuery: setSearchInput,
 		setPageLimit: changePageLimit,
 		setResults: setSearchResults,
-		getState: getSortPageSearchState
+		setSearchField: setSearchType,
+		setSearchQuery: setSearchInput,
+		setSortAscending: setSortAscending,
+		setSortField: setSortField,
+		showPreviousPage: showPreviousPage,
+		showNextPage: showNextPage,
+		use: searchWithParameters
 	};
 });
