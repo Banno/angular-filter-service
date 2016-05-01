@@ -16,6 +16,16 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 		return angular.copy(searchParameters);
 	}
 
+	function executeSearch() {
+		if (searchParameters && searchParameters.callback) {
+			searchResults = {
+				total: 0,
+				items: []
+			};
+			searchParameters.callback();
+		}
+	}
+
 	function searchWithParameters(searchParams, callback) {
 		searchParameters = {
 			limit: angular.copy(searchParams.limit),
@@ -86,16 +96,6 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 			searchParameters.offset = 0;
 			searchParameters.searchQuery = input;
 			executeSearch();
-		}
-	}
-
-	function executeSearch() {
-		if (searchParameters && searchParameters.callback) {
-			searchResults = {
-				total: 0,
-				items: []
-			};
-			searchParameters.callback();
 		}
 	}
 

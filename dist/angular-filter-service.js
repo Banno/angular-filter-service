@@ -4,7 +4,7 @@
  * (c) 2015 Jack Henry & Associates Inc
  * License: Apache-2.0
  */
-(function(root, factory) {
+;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     define(['angular'], factory);
   } else if (typeof exports === 'object') {
@@ -29,6 +29,16 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 
 	function getSearchParameters() {
 		return angular.copy(searchParameters);
+	}
+
+	function executeSearch() {
+		if (searchParameters && searchParameters.callback) {
+			searchResults = {
+				total: 0,
+				items: []
+			};
+			searchParameters.callback();
+		}
 	}
 
 	function searchWithParameters(searchParams, callback) {
@@ -101,16 +111,6 @@ angular.module('banno.filterService', []).factory('filterService', function filt
 			searchParameters.offset = 0;
 			searchParameters.searchQuery = input;
 			executeSearch();
-		}
-	}
-
-	function executeSearch() {
-		if (searchParameters && searchParameters.callback) {
-			searchResults = {
-				total: 0,
-				items: []
-			};
-			searchParameters.callback();
 		}
 	}
 
