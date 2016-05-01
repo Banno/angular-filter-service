@@ -24,13 +24,14 @@ requirejs.config({
 	},
 
 	paths: {
-		'angular': 'bower_components/angular/angular',
+		'angular': 'node_modules/angular/angular',
 		'angular-mocks': 'node_modules/angular-mocks/angular-mocks',
-		'banno/filterService': 'dist/angular-filter-service'
+		'banno/filterService': 'dist/angular-filter-service',
+		'es5-shim': 'node_modules/es5-shim/es5-shim'
 	},
 
 	// Start the test run once RequireJS is done.
 	callback: window.__karma__.start
 });
 
-define('testModule', ['banno/filterService', 'angular-mocks'], function(){});
+define('testModule', ['banno/filterService', 'angular-mocks', 'es5-shim'], function(){});
