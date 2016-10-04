@@ -1,7 +1,7 @@
 {
   "name": "angular-filter-service",
   "description": "Simple data manager for filtering, sorting, and pagination",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/Banno/angular-filter-service",
   "license": "Apache-2.0",
   "contributors": [
