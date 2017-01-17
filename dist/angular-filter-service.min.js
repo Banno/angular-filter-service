@@ -1,5 +1,5 @@
 /*!
- * angular-filter-service v1.0.2
+ * angular-filter-service v1.0.3
  * https://github.com/Banno/angular-filter-service
  * (c) 2015 Jack Henry & Associates Inc
  * License: Apache-2.0
